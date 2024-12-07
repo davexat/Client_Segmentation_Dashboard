@@ -11,7 +11,7 @@ dependencies:
   - pathlib
   - pip
   - pyprojroot
-  - python=yes
+  - python
   - pip:
     - pyhere
     
