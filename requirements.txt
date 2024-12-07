@@ -1,0 +1,8 @@
+fs
+jupyter
+jupyterlab
+pathlib
+pyprojroot
+# Dependencias de pip deben listarse con su nombre de paquete:
+pyhere
+

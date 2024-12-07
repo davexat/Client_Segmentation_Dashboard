@@ -1,0 +1,17 @@
+# conda env create --file environment.yml
+name: customer_segmentation
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - fs
+  - jupyter
+  - jupyterlab
+  - pathlib
+  - pip
+  - pyprojroot
+  - python=yes
+  - pip:
+    - pyhere
+    
