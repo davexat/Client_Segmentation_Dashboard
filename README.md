@@ -6,6 +6,10 @@ Customer segmentation project for e-commerce using data science. Includes explor
 
 Please read [install.md](install.md) for details on how to set up this project.
 
+## Workflow for the project
+
+https://drive.google.com/file/d/1x1CMr8Cr9e0HkxDifn9u4e3clQUiI7nD/view?usp=drive_link
+
 ## Project Organization
 
     ├── LICENSE
