@@ -6,7 +6,8 @@ channels:
   - defaults
 dependencies:
   - fs
-  - seaborn 
+  - seaborn
+  - streamlit
   - scikit-learn
   - matplotlib
   - jupyter
