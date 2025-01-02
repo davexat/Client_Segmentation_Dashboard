@@ -19,7 +19,7 @@ def readme() -> str:
 
 setup(
     name='customer_segmentation',
-    version='yes',
+    version="0.1.0",
     author='David Sandoval, Jose Toapanta, Gustavo Moscoso',
     author_email='Yout email (or your organization/company/team)',
     description='Customer segmentation project for e-commerce using data science. Includes exploratory analysis, clustering, and an interactive Streamlit dashboard to visualize key metrics and compare customer segments.',
