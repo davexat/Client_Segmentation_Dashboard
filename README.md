@@ -1,3 +1,5 @@
+![ProjectWorkflow](https://github.com/user-attachments/assets/8d5cf4e6-7f09-41cb-9a1e-06ac21f585ef)
+
 # Client_Segmentation_Dashboard
 
 Customer segmentation project for e-commerce using data science. Includes exploratory analysis, clustering, and an interactive Streamlit dashboard to visualize key metrics and compare customer segments.
