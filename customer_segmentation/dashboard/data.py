@@ -5,7 +5,7 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    dataset_path = "F:/Xathorus/Cosas/programming-projects/projects-jupyter/customer_segmentation/data/processed/cleaned_dataset.csv"
+    dataset_path = "data/processed/cleaned_dataset.csv"
     df = pd.read_csv(dataset_path)
     df = df.drop(columns=["ID", "dias_primera_compra", "n_clicks", "info_perfil"])
     scaler = MinMaxScaler()
