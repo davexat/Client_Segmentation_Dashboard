@@ -22,9 +22,23 @@ https://drive.google.com/file/d/1x1CMr8Cr9e0HkxDifn9u4e3clQUiI7nD/view?usp=drive
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries.
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, eg.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks                 <- Jupyter notebooks for exploratory and modeling tasks.
+    │   │
+    │   ├── `0.0_jtd_data_preparation.ipynb`  <- Notebook for loading the raw dataset, cleaning data, 
+    │   │ and scaling features. Outputs intermediate datasets saved in the `data/raw/` folder.
+    │   │
+    │   ├── `1.0_jtd_exploratory_data_analysis.ipynb`   <- Notebook for visualizing data distributions,
+    │   │ correlations, and identifying patterns in the dataset (e.g., histograms, pairplots, etc.).
+    │   │
+    │   ├── `2.0_jtd_selecting_clustering_methods.ipynb`   <- Notebook for experimenting with different 
+    │   │ clustering algorithms (e.g., K-means, DBSCAN) and tuning parameters to find the best approach 
+    │   │ for the dataset.
+    │   │
+    │   ├── `3.0_dsb_clustering_implementation.ipynb`   <-  Notebook for applying the selected clustering 
+    │   │ method (DBSCAN), training the model, and generating cluster labels for each data point.
+    │   │
+    │   └── `4.0_dsb_clustering_analysis.ipynb`    <- Notebook for visualizing and analyzing the clustering 
+    │     results. Includes scatter plots  (with PCA), box plots, and insights about each cluster's characteristics.
     │
     ├── environment.yml    <- The requirements file for reproducing the analysis environment.
     ├── requirements.txt   <- The pip requirements file for reproducing the environment.
