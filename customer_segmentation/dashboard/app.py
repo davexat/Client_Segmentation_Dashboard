@@ -7,8 +7,7 @@ from customer_segmentation.dashboard.sections.comparissons import show_compariss
 set_page_config()
 
 def main():
-    st.title("Customer Segmentation Dashboard")
-
+    #st.title("Customer Segmentation Dashboard")
     # Sidebar navigation
     st.sidebar.header("Navigation")
     option = st.sidebar.selectbox(
