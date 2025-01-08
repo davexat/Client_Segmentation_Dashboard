@@ -31,8 +31,3 @@ def plot_correlation_matrix(df, method):
     sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", cbar=True)
     plt.title(f"Correlation Matrix ({method.capitalize()} Method)")
     plt.show()
-
-def plot_pairplot(df, hue=None, vars=None, kind='scatter', diag_kind='auto', palette=None):
-    sns.pairplot(df, hue=hue, vars=vars, kind=kind, diag_kind=diag_kind, palette=palette, height=1.5)
-    plt.suptitle("Pairplot of DataFrame", y=1.02, fontsize=14)
-    plt.show()

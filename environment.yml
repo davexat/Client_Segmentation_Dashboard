@@ -17,5 +17,7 @@ dependencies:
   - plotly
   - pyprojroot
   - python=3.10
+  - pandas
+  - numpy
   - pip:
     - pyhere
