@@ -17,7 +17,7 @@ def readme() -> str:
 setup(
     name='customer_segmentation',
     version='0.1.0',
-    author='David Sandoval, Jose Toapanta, Gustavo Moscoso',
+    author='David Sandoval, Jose Toapanta',
     author_email='d4vidsandoval@gmail.com',
     description=(
         'Customer segmentation project for e-commerce using data science. '

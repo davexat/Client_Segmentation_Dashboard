@@ -2,7 +2,8 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from customer_segmentation.dashboard.config import CLUSTER_COLORS as colors
+from dashboard.config import CLUSTER_COLORS as colors
+from dashboard.sections.cluster_analysis import show_cluster_analysis
 
 # Función para mostrar la visión general
 def show_overview(df):
@@ -10,12 +11,22 @@ def show_overview(df):
 
     customer_types = ["High Spenders", "Moderate Engagers", "Active Savers"]
 
-    show_clients_cluster(df)
-
-    selected_var = show_variable_selector()
-    show_bar_chart(df, selected_var, customer_types)
-    show_histogram(df, selected_var, customer_types)
-    show_boxplot(df, selected_var, customer_types)
+    col1, col2 = st.columns([7,3])
+    with col1:
+        show_clients_cluster(df)
+        show_cluster_analysis(df)
+    with col2:
+        col2_1, col2_2 = st.columns(2)
+        with col2_1:
+            selected_var = show_variable_selector()
+        with col2_2:
+            selected_graph = show_graph_selector()
+        if selected_graph == "Bars":
+            show_bar_chart(df, selected_var, customer_types)
+        elif selected_graph == "Histogram":
+            show_histogram(df, selected_var, customer_types)
+        elif selected_graph == "Boxplot":
+            show_boxplot(df, selected_var, customer_types)
 
 def show_clients_cluster(df):
     gb = df.groupby('cluster').size()
@@ -45,6 +56,10 @@ def show_variable_selector():
     variables = ["n_visitas", "monto_compras", "monto_descuentos"]
     return st.selectbox("Select a variable to display:", variables)
 
+def show_graph_selector():
+    variables = ["Bars", "Histogram", "Boxplot"]
+    return st.selectbox("Select a graph to display:", variables)
+
 # Función para mostrar el gráfico de barras
 def show_bar_chart(df, selected_var, customer_types):
     data = {
@@ -67,6 +82,9 @@ def show_bar_chart(df, selected_var, customer_types):
         textposition='outside', 
         marker=dict(color=[colors["High Spenders"], colors["Moderate Engagers"], colors["Active Savers"]])
     )
+    fig.update_layout(
+        height=550
+    )
     st.plotly_chart(fig)
 
 # Función para mostrar el gráfico de histograma
@@ -78,6 +96,14 @@ def show_histogram(df, selected_var, customer_types):
         template="plotly_dark",
         category_orders={"cluster": [0, 1, 2]},
         color_discrete_map={0: colors["High Spenders"], 1: colors["Moderate Engagers"], 2: colors["Active Savers"]}
+    )
+    hist_fig.update_layout(
+        height=550,
+        legend=dict(
+            font=dict(size=15),              # Leyenda más compacta
+            x=0.75,                           # Posición horizontal (centrada)
+            y=1
+        )
     )
     hist_fig.update_traces(opacity=1)
     hist_fig.for_each_trace(lambda t: t.update(name=customer_types[int(t.name)]))
@@ -96,6 +122,15 @@ def show_boxplot(df, selected_var, customer_types):
     boxplot_fig.update_yaxes(
         tickvals=[0, 1, 2],
         ticktext=["0", "1", "2"]
+    )
+    boxplot_fig.update_layout(
+        height=550,
+        legend=dict(
+            font=dict(size=15),              # Leyenda más compacta
+            x=0.3,                           # Posición horizontal (centrada)
+            y=-0.5                         # Posición vertical (debajo del gráfico)
+                                # Ancla vertical (tope)
+        )
     )
     boxplot_fig.for_each_trace(lambda t: t.update(name=customer_types[int(t.name)]))
     st.plotly_chart(boxplot_fig)
