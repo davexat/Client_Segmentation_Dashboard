@@ -14,6 +14,9 @@ def set_custom_style():
         [data-testid="stAppViewContainer"] {
             background-color: #fff;
         }
+        [data-testid="stMainBlockContainer"]{
+            padding: 30px;
+        }
         </style>
         """,
         unsafe_allow_html=True,
