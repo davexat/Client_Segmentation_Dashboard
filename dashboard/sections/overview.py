@@ -38,19 +38,19 @@ def show_selector_graph(df):
 
 def show_clients_cluster(df):
     gb = df.groupby('cluster').size()
-    show_metric_cluster(gb, " clients", format=False, bg_color="#6A1B9A")
+    show_metric_cluster(gb, " clients", format=False, bg_color="#9BC1BC")
 
 def show_visits_cluster(df):
     gb = df.groupby('cluster')["n_visitas"].sum()
-    show_metric_cluster(gb, " visits")
+    show_metric_cluster(gb, " visits", bg_color="#0277BD")
 
 def show_sales_cluster(df):
     gb = df.groupby('cluster')["monto_compras"].sum()
-    show_metric_cluster(gb, " sales")
+    show_metric_cluster(gb, " sales", bg_color="#388E3C")
 
 def show_discounts_cluster(df):
     gb = df.groupby('cluster')["monto_descuentos"].sum()
-    show_metric_cluster(gb, " discounts")
+    show_metric_cluster(gb, " discounts", bg_color="#E65100")
 
 def show_metric_cluster(gb, text, format=True, bg_color="white"):
     total, total_0, total_1, total_2 = gb.sum(), gb.loc[0], gb.loc[1], gb.loc[2]
@@ -61,9 +61,9 @@ def show_metric_cluster(gb, text, format=True, bg_color="white"):
         total_2 = format_large_numbers(total_2)
     
     metrics_html = f"""
-    <div style="background-color: {bg_color}; padding: 0px; border-radius: 0;">
+    <div style="background-color: {bg_color}; padding: 0px; border-radius: 0; margin: 0 0 15px 0;">
         <div style="display: flex; justify-content: space-around;">
-            <div style="flex: 1;">{create_header(f"Total{text}", total, "gray", bg_color)}</div>
+            <div style="flex: 1;">{create_header(f"Total{text}", total, "black", bg_color)}</div>
             <div style="flex: 1;">{create_header(f"{customers[0]}{text}", total_0, colors[customers[0]], bg_color)}</div>
             <div style="flex: 1;">{create_header(f"{customers[1]}{text}", total_1, colors[customers[1]], bg_color)}</div>
             <div style="flex: 1;">{create_header(f"{customers[2]}{text}", total_2, colors[customers[2]], bg_color)}</div>
