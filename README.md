@@ -14,62 +14,87 @@ The project spans from data preparation and cleaning to visualizing the results 
 
 ### **Components**
 
-- **Database:**
+- <img src="https://github.com/user-attachments/assets/109ab444-25f9-4756-bc98-50b8d6b189b6" alt="L1" width="30"/> **Database:** 
+  
   Contains key information related to customer behavior and characteristics, serving as the primary source of analyzed data.
 
-- **Jupyter Notebooks:**  
+- <img src="https://github.com/user-attachments/assets/9ded49b3-b532-4558-8af5-83c3475ef354" alt="L2" width="30"/> **Jupyter Notebooks:**
+  
   The notebooks are organized by workflow stages, from initial data cleaning to advanced cluster analysis.
 
-- **Streamlit:**  
+- <img src="https://github.com/user-attachments/assets/c458d40a-f336-46af-bacc-3b5756155e5b" alt="L3" width="30"/> **Streamlit:**
+  
   A platform used to create the interactive dashboard that visualizes segmentation results and allows comparisons between customer groups.
 
-- **Scikit-learn:**  
+- <img src="https://github.com/user-attachments/assets/81241e45-5833-44b4-b87f-a7452ecd0e20" alt="L4" width="30"/> **Scikit-learn:**
+  
   A library used for data scaling, clustering algorithm implementation, and evaluation metric computation.
 
-- **Visualization Tools:**  
-  - **Matplotlib and Seaborn:** Static visualizations used in exploratory analysis.  
-  - **Plotly:** Interactive charts that allow dynamic data exploration.
+- **Visualization Tools:**
+  
+  - **Matplotlib and Seaborn:** Static visualizations used in exploratory analysis.
+    
+  - <img src="https://github.com/user-attachments/assets/e793cbb5-a231-4f71-a49c-a7933c1b1c88" alt="L5" width="50"/> **Plotly:** Interactive charts that allow dynamic data exploration.
 
 ---
 
 ## Workflow Summary
 
 ### **Data Preparation and Cleaning (Notebook 0):**
+
 - Removal of inconsistent records, including null values, negatives, and zeros in key variables.
+  
 - Transformation and organization of columns to ensure the quality of the initial data.
 
 ### **Exploratory Analysis (Notebook 1):**
+
 - Exploration of available variables in the dataset, identifying relevant patterns and trends.
+  
 - Initial review of possible relationships between main features for customer segmentation.
 
 ### **Clustering Methods and Metrics Definition (Notebook 2):**
+
 - Theoretical evaluation of clustering methods suitable for the segmentation problem.
+  
 - Selection of clustering approaches based on data nature and definition of metrics to evaluate result quality.
 
 ### **Clustering Implementation (Notebook 3):**
+
 - Practical application of the methods defined in the theoretical analysis.
+  
 - Comparison of results to determine the most suitable method based on the behavior of identified groups.
 
 ### **Cluster Analysis and Categorization (Notebook 4):**
+
 - Detailed analysis of the generated clusters, identifying specific patterns in customer groups.
+  
 - Assignment of descriptive labels for each segment based on their main characteristics.
 
 ### **Interactive Dashboard Development:**
+
 - Creation of a dashboard that allows users to:
+  
   - Visualize general statistics.
+    
   - Explore customer segments.
+    
   - Compare customer groups interactively.
 
 ---
 
 ## Technologies Used
 
-- **Streamlit:** Development of the interactive dashboard.  
-- **Pandas:** Management and analysis of structured data.  
-- **NumPy:** Advanced mathematical operations.  
-- **Scikit-learn:** Clustering algorithms and evaluation metrics.  
-- **Matplotlib and Seaborn:** Static visualizations for exploratory analysis.  
-- **Plotly:** Interactive charts for dynamic analysis.
+- <img src="https://github.com/user-attachments/assets/c458d40a-f336-46af-bacc-3b5756155e5b" alt="L6" width="40"/> **Streamlit:** Development of the interactive dashboard.
+  
+- <img src="https://github.com/user-attachments/assets/c201c391-c73a-4279-99b5-f29c0c8e5124" alt="L7" width="40"/> **Pandas:** Management and analysis of structured data.
+
+- <img src="https://github.com/user-attachments/assets/f6f47768-b207-4aac-af66-2f1d6293e29b" alt="L8" width="40"/> **NumPy:** Advanced mathematical operations.
+
+- <img src="https://github.com/user-attachments/assets/81241e45-5833-44b4-b87f-a7452ecd0e20" alt="L9" width="40"/> **Scikit-learn:** Clustering algorithms and evaluation metrics.
+
+- **Matplotlib and Seaborn:** Static visualizations for exploratory analysis.
+
+- <img src="https://github.com/user-attachments/assets/e793cbb5-a231-4f71-a49c-a7933c1b1c88" alt="L10" width="50"/> **Plotly:** Interactive charts for dynamic analysis.
 
 ---
 
