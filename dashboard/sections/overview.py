@@ -59,19 +59,14 @@ def show_discounts_cluster(df, key="discounts"):
     show_metric_cluster(gb, " discounts", key, bg_color="#1B1D22")
 
 def show_metric_cluster(gb, text, key, bg_color=defcolor, format=True):
-    total, total_0, total_1, total_2 = gb.sum(), gb.loc[0], gb.loc[1], gb.loc[2]
+    totals = gb.sum(), gb.loc[0], gb.loc[1], gb.loc[2]
     if format:
-        total = format_large_numbers(total)
-        total_0 = format_large_numbers(total_0)
-        total_1 = format_large_numbers(total_1)
-        total_2 = format_large_numbers(total_2)
+        totals = tuple(format_large_numbers(total) for total in totals)
     metrics_html = f"""
     <div style="padding: 0px; margin: 0 0 15px 0;">
         <div style="display: flex; justify-content: space-around;">
-            <div style="flex: 1;">{create_header(f"Total{text}", total, "white")}</div>
-            <div style="flex: 1;">{create_header(f"{customers[0]}{text}", total_0, colors[customers[0]])}</div>
-            <div style="flex: 1;">{create_header(f"{customers[1]}{text}", total_1, colors[customers[1]])}</div>
-            <div style="flex: 1;">{create_header(f"{customers[2]}{text}", total_2, colors[customers[2]])}</div>
+            <div style="flex: 1;">{create_header(f"Total{text}", totals[0], "white")}</div>
+            {"".join(f'<div style="flex: 1;">{create_header(f"{customers[i]}{text}", totals[i+1], colors[customers[i]])}</div>' for i in range(len(customers)))}
         </div>
     </div>
     """
