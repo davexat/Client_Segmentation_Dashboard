@@ -5,8 +5,13 @@ import pandas as pd
 
 from dashboard.config import CLUSTER_COLORS as colors
 from dashboard.config import CUSTOMER_TYPES as customers
+from dashboard.config import DEFAULT_BACKGROUND_COLOR as defcolor
 from dashboard.sections.cluster_analysis import show_cluster_analysis
 from dashboard.layout import create_container
+
+#from customer_segmentation.plot import create_boxplot_figure
+#from customer_segmentation.plot import create_histogram_figure
+#from customer_segmentation.plot import create_bar_chart_figure
 
 height = 500
 def show_overview(df):
@@ -21,21 +26,21 @@ def show_overview(df):
     with col3:
         show_cluster_analysis(df)
     with col4:
-        show_selector_graph(df, "#1B1D22")
+        show_selector_graph(df, defcolor)
 
-def show_selector_graph(df, bg_color):
-    with create_container("graphs"):
+def show_selector_graph(df, bg_color = defcolor):
+    with create_container("graphs", bg_color):
         col2_1, col2_2 = st.columns(2)
         with col2_1:
             selected_var = show_variable_selector()
         with col2_2:
             selected_graph = show_graph_selector()
         if selected_graph == "Bars":
-            show_bar_chart(df, selected_var, bg_color)
+            st.plotly_chart(show_bar_chart(df, selected_var, color = bg_color, height = height))
         elif selected_graph == "Histogram":
-            show_histogram(df, selected_var, bg_color)
+            st.plotly_chart(show_histogram(df, selected_var, color = bg_color, height = height))
         elif selected_graph == "Boxplot":
-            show_boxplot(df, selected_var, bg_color)
+            st.plotly_chart(show_boxplot(df, selected_var, color = bg_color, height = height))
 
 def show_clients_cluster(df, key="clients"):
     gb = df.groupby('cluster').size()
@@ -53,7 +58,7 @@ def show_discounts_cluster(df, key="discounts"):
     gb = df.groupby('cluster')["monto_descuentos"].sum()
     show_metric_cluster(gb, " discounts", key, bg_color="#1B1D22")
 
-def show_metric_cluster(gb, text, key, bg_color="black", format=True):
+def show_metric_cluster(gb, text, key, bg_color=defcolor, format=True):
     total, total_0, total_1, total_2 = gb.sum(), gb.loc[0], gb.loc[1], gb.loc[2]
     if format:
         total = format_large_numbers(total)
@@ -90,16 +95,66 @@ def show_graph_selector():
     variables = ["Bars", "Histogram", "Boxplot"]
     return st.selectbox("Select a graph to display:", variables)
 
-def show_bar_chart(df, selected_var, color):
+def show_bar_chart(df, selected_var, cluster_labels = customers, cluster_colors = colors, color=defcolor, height=400):
+    bar_chart_fig = create_bar_chart_figure(df, selected_var, cluster_labels, cluster_colors)
+    return configure_bar_chart_figure(bar_chart_fig, color, height)
+
+def show_histogram(df, selected_var, cluster_labels = customers, cluster_colors = colors, color=defcolor, height=400):
+    hist_fig = create_histogram_figure(df, selected_var, cluster_labels, cluster_colors)
+    return configure_histogram_figure(hist_fig, cluster_labels, color, height)
+
+def show_boxplot(df, selected_var, cluster_labels = customers, cluster_colors = colors, color=defcolor, height=400):
+    boxplot_fig = create_boxplot_figure(df, selected_var, cluster_labels, cluster_colors)
+    return configure_boxplot_figure(boxplot_fig, cluster_labels, color, height)
+
+#### METODOS DE CONFIGURACION
+
+def configure_boxplot_figure(fig, cluster_labels, color, height=400, legend_position=(0.75, 1.2)):
+    fig.update_yaxes(
+        tickvals=list(range(len(cluster_labels))),
+        ticktext=cluster_labels
+    )
+    fig.update_layout(
+        plot_bgcolor=color,
+        paper_bgcolor=color,
+        height=height,
+        legend=dict(font=dict(size=15), x=legend_position[0], y=legend_position[1])
+    )
+    fig.for_each_trace(lambda t: t.update(name=cluster_labels[int(t.name)]))
+    return fig
+
+def configure_histogram_figure(fig, cluster_labels, color, height=400, legend_position=(0.75, 1.2)):
+    fig.update_layout(
+        plot_bgcolor=color,
+        paper_bgcolor=color,
+        height=height,
+        legend=dict(font=dict(size=15), x=legend_position[0], y=legend_position[1]),
+        title=dict(xanchor="center", x=0.5)
+    )
+    fig.update_traces(opacity=1)
+    fig.for_each_trace(lambda t: t.update(name=cluster_labels[int(t.name)]))
+    return fig
+
+def configure_bar_chart_figure(fig, color, height=400): 
+    fig.update_layout(
+        plot_bgcolor=color,
+        paper_bgcolor=color,
+        height=height
+    )
+    return fig
+
+#### ESTO NO DEBERÍA IR AQUÍ
+
+def create_bar_chart_figure(df, selected_var, cluster_labels, cluster_colors):
     data = {
-        "Customer Type": customers,
+        "Customer Type": cluster_labels,
         "Mean": [
-            df[df['cluster'] == 0][selected_var].mean().astype(int),
-            df[df['cluster'] == 1][selected_var].mean().astype(int),
-            df[df['cluster'] == 2][selected_var].mean().astype(int)
+            df[df['cluster'] == i][selected_var].mean().astype(int)
+            for i in range(len(cluster_labels))
         ]
     }
     df_plot = pd.DataFrame(data)
+
     fig = px.bar(
         df_plot, x="Customer Type", y="Mean", text="Mean",
         title=f"Mean {selected_var} by Customer Type",
@@ -107,53 +162,40 @@ def show_bar_chart(df, selected_var, color):
         template="plotly_dark"
     )
     fig.update_traces(
-        texttemplate='%{text}', 
-        textposition='outside', 
-        marker=dict(color=[colors[customer] for customer in customers])
+        texttemplate='%{text}',
+        textposition='outside',
+        marker=dict(color=[cluster_colors[label] for label in cluster_labels])
     )
-    fig.update_layout(height=height, paper_bgcolor=color)
-    st.plotly_chart(fig)
+    return fig
 
-def show_histogram(df, selected_var):
-    hist_fig = px.histogram(
-        df, x=selected_var, color='cluster', barmode='overlay',
+def create_boxplot_figure(df, selected_var, cluster_labels, cluster_colors):
+    return px.box(
+        df,
+        x=selected_var,
+        y='cluster',
+        color='cluster',
+        orientation='h',
+        title=f"Boxplot of {selected_var} by Customer Type",
+        labels={selected_var: selected_var, "cluster": "Customer Type"},
+        category_orders={"cluster": list(range(len(cluster_labels)))},
+        color_discrete_map={i: cluster_colors[cluster_labels[i]] for i in range(len(cluster_labels))},
+        hover_data={'cluster': True, 'n_visitas': True, 'monto_compras': True, 'monto_descuentos': True}
+    )
+
+def create_histogram_figure(df, selected_var, cluster_labels, cluster_colors):
+    return px.histogram(
+        df,
+        x=selected_var,
+        color='cluster',
+        barmode='overlay',
         title=f"Distribution of {selected_var} by Customer Type",
         labels={selected_var: selected_var, "cluster": "Customer Type"},
         template="plotly_dark",
-        category_orders={"cluster": [0, 1, 2]},
-        color_discrete_map={i: colors[customers[i]] for i in range(len(customers))}
+        category_orders={"cluster": list(range(len(cluster_labels)))},
+        color_discrete_map={i: cluster_colors[cluster_labels[i]] for i in range(len(cluster_labels))}
     )
-    hist_fig.update_layout(
-        paper_bgcolor=color,
-        height=height,
-        legend=dict(font=dict(size=15), x=0.75, y=1.2),
-        title=dict(xanchor="center", x=0.5)
-    )
-    hist_fig.update_traces(opacity=1)
-    hist_fig.for_each_trace(lambda t: t.update(name=customers[int(t.name)]))
-    st.plotly_chart(hist_fig)
 
-def show_boxplot(df, selected_var):
-    boxplot_fig = px.box(
-        df, x=selected_var, y='cluster', color='cluster', orientation='h',
-        title=f"Boxplot of {selected_var} by Customer Type",
-        labels={selected_var: selected_var, "cluster": "Customer Type"},
-        category_orders={"cluster": list(range(len(customers)))},
-        color_discrete_map={i: colors[customers[i]] for i in range(len(customers))},
-        hover_data={'cluster': True, 'n_visitas': True, 'monto_compras': True, 'monto_descuentos': True}
-    )
-    boxplot_fig.update_yaxes(
-        tickvals=list(range(len(customers))),
-        ticktext=customers
-    )
-    boxplot_fig.update_layout(
-        paper_bgcolor=color,
-        height=height,
-        legend=dict(font=dict(size=15), x=0.75, y=1.2)
-    )
-    boxplot_fig.for_each_trace(lambda t: t.update(name=customers[int(t.name)]))
-    st.plotly_chart(boxplot_fig)
-
+#### METODOS UTIL
 def format_large_numbers(value):
     if value >= 1_000_000:
         return f"{value / 1_000_000:.1f}M"

@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 
 from dashboard.config import CLUSTER_COLORS as colors
 from dashboard.config import CUSTOMER_TYPES as customers
+from dashboard.config import DEFAULT_BACKGROUND_COLOR as defcolor
 from dashboard.layout import create_container
 
 def show_cluster_analysis(df):
     show_pie_charts(df)
     plot_scatter_plots(df)
 
-def show_pie_charts(df, color="#1B1D22"):
-    with create_container(color, "piecharts"):
+def show_pie_charts(df, color=defcolor):
+    with create_container("piecharts", defcolor):
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.plotly_chart(plot_pie_chart(df, "cluster", color))
@@ -24,7 +25,7 @@ def show_pie_charts(df, color="#1B1D22"):
         with col4:
             st.plotly_chart(plot_pie_chart(df, "monto_descuentos", color))
 
-def plot_pie_chart(df, column, color):
+def plot_pie_chart(df, column, color = defcolor):
     data = df.groupby('cluster')[column].sum() if column != "cluster" else df['cluster'].value_counts()
     fig = px.pie(
         names=customers,

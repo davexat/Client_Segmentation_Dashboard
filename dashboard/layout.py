@@ -1,9 +1,10 @@
 import streamlit as st
+from dashboard.config import DEFAULT_BACKGROUND_COLOR as defcolor
 
 def set_page_config():
     st.set_page_config(layout="wide")
 
-def create_container(key, color = "#1B1D22"):
+def create_container(key, color = defcolor):
     st.markdown(
         f"""
         <style>
