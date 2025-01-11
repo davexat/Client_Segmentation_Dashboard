@@ -6,13 +6,15 @@ The purpose of this project is to identify and analyze different customer profil
 
 The project spans from data preparation and cleaning to visualizing the results through an interactive panel, ensuring that the model and the generated segments are easily interpretable for end-users.
 
+![400077713-8d5cf4e6-7f09-41cb-9a1e-06ac21f585ef](https://github.com/user-attachments/assets/ca22660f-4da5-48d8-8a25-aa95bb8a472d)
+
 ---
 
 ## Components and Workflow
 
 ### **Components**
 
-- **Database:**  
+- **Database:**
   Contains key information related to customer behavior and characteristics, serving as the primary source of analyzed data.
 
 - **Jupyter Notebooks:**  
@@ -107,10 +109,15 @@ pip install --editable .
 ### **Run the Dashboard**
 ```bash
 streamlit run app.py
+```
+
+---
 
 ## Installation guide
 
 Please read [install.md](install.md) for details on how to set up this project.
+
+---
 
 ## Project Organization
 
