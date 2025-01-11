@@ -6,23 +6,25 @@ import matplotlib.pyplot as plt
 
 from dashboard.config import CLUSTER_COLORS as colors
 from dashboard.config import CUSTOMER_TYPES as customers
+from dashboard.layout import create_container
 
 def show_cluster_analysis(df):
     show_pie_charts(df)
     plot_scatter_plots(df)
 
-def show_pie_charts(df):
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        plot_pie_chart(df, "cluster")
-    with col2:
-        plot_pie_chart(df, "n_visitas")
-    with col3:
-        plot_pie_chart(df, "monto_compras")
-    with col4:
-        plot_pie_chart(df, "monto_descuentos")
+def show_pie_charts(df, color="#1B1D22"):
+    with create_container(color, "piecharts"):
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.plotly_chart(plot_pie_chart(df, "cluster", color))
+        with col2:
+            st.plotly_chart(plot_pie_chart(df, "n_visitas", color))
+        with col3:
+            st.plotly_chart(plot_pie_chart(df, "monto_compras", color))
+        with col4:
+            st.plotly_chart(plot_pie_chart(df, "monto_descuentos", color))
 
-def plot_pie_chart(df, column):
+def plot_pie_chart(df, column, color):
     data = df.groupby('cluster')[column].sum() if column != "cluster" else df['cluster'].value_counts()
     fig = px.pie(
         names=customers,
@@ -33,12 +35,13 @@ def plot_pie_chart(df, column):
         template="plotly_dark"
     )
     fig.update_layout(
+        paper_bgcolor=color,
         margin=dict(l=30, r=30, t=0, b=0),
-        title=dict(font=dict(size=15), y=0.9),
-        legend=dict(font=dict(size=15), x=0.16, y=0),
+        title=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, y=0.9),
+        legend=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, yanchor="bottom", y=0.025),
         height=400
     )
-    st.plotly_chart(fig)  # Mostrar directamente
+    return fig
 
 def plot_scatter_plots(df):
     scatter_vars = [("n_visitas", "monto_compras"), ("n_visitas", "monto_descuentos"), ("monto_compras", "monto_descuentos")]

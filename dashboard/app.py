@@ -11,15 +11,15 @@ def set_custom_style():
     st.markdown(
         """
         <style>
-        [data-testid="stAppViewContainer"] {
-            background-color: #fff;
-        }
         [data-testid="stMainBlockContainer"]{
             padding: 30px;
         }
+        [data-testid="stVerticalBlockBorderWrapper"]{
+            padding: 0;
+        }
         </style>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 def main():
