@@ -1,12 +1,14 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import DBSCAN
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+from sklearn.base import BaseEstimator, ClusterMixin
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 from customer_segmentation.plot import visualize_clusters
-
 
 def scale_minmax(df, column):
     scaler = MinMaxScaler()
@@ -32,62 +34,45 @@ def apply_pca(data, n_components=2):
     return pca_result, pca
 
 def pca_loadings(pca_model, columns):
-    """Displays the loadings of the PCA components."""
     loadings = pd.DataFrame(pca_model.components_, columns=columns, index=[f'PC{i+1}' for i in range(pca_model.components_.shape[0])])
     return loadings
 
-def dbscan_pipeline(data):
+class DBSCANPipeline(Pipeline, BaseEstimator, ClusterMixin):
+    def fit(self, X, y=None):
+        X = X.select_dtypes(include=[np.number])
+        self.steps[0][1].fit(X)
+        X_scaled = self.steps[0][1].transform(X)
+        self.steps[1][1].fit(X_scaled)
+        self.labels_ = self.steps[1][1].labels_
+        self.X_scaled = X_scaled
+        return self
 
-    scaler = MinMaxScaler()
-    data_scaled = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
+    def predict(self, X):
+        X = X.select_dtypes(include=[np.number])
+        X_new_scaled = self.steps[0][1].transform(X)
+        datos_validos = self.X_scaled[self.labels_ != -1]
+        clusters_validos = self.labels_[self.labels_ != -1]
+        cluster_asignaciones = []
+        for nuevo in X_new_scaled:
+            distancias = np.linalg.norm(datos_validos - nuevo, axis=1)
+            vecino_mas_cercano = np.min(distancias)
+            if vecino_mas_cercano > self.steps[1][1].eps:
+                cluster_asignaciones.append(-1)  # Ruido
+            else:
+                cluster_asignado = clusters_validos[np.argmin(distancias)]
+                cluster_asignaciones.append(int(cluster_asignado))
+        X_con_clusters = X.copy()
+        X_con_clusters['cluster'] = cluster_asignaciones
+        print("\nDatos con clúster asignado:")
+        print(X_con_clusters)
+        conteo_clusters = X_con_clusters['cluster'].value_counts().sort_index()
+        print("\nConteo de registros por clúster:")
+        print(conteo_clusters)
 
-    eps = 0.04
-    min_samples = 50
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+        return cluster_asignaciones
 
-    clusters = dbscan.fit_predict(data_scaled)
-
-    clustered_data = data.copy()
-    clustered_data["cluster"] = clusters
-
-    clustered_data = clustered_data[clustered_data["cluster"] != -1]
-    valid_clusters = clustered_data["cluster"].values
-    data_scaled_filtered = data_scaled.iloc[clustered_data.index]
-
-    num_clusters = len(set(valid_clusters))
-    if num_clusters > 1:
-        silhouette = silhouette_score(data_scaled_filtered, valid_clusters)
-        davies_bouldin = davies_bouldin_score(data_scaled_filtered, valid_clusters)
-    else:
-        silhouette = -1
-        davies_bouldin = -1
-
-    metrics = {
-        "Model": "DBSCAN",
-        "Silhouette Score": silhouette,
-        "Davies-Bouldin Score": davies_bouldin,
-        "Num Clusters": num_clusters,
-    }
-
-    pipeline = Pipeline([
-        ("scaler", scaler),
-        ("clustering", dbscan),
+def crear_pipeline():
+    return DBSCANPipeline([
+        ('scaler', MinMaxScaler()),
+        ('dbscan', DBSCAN(eps=0.04, min_samples=50))  
     ])
-
-    cluster_summary = (
-        clustered_data.groupby("cluster")
-        .agg({col: "mean" for col in clustered_data.columns if col != "cluster"})
-        .reset_index()
-    )
-    cluster_counts = clustered_data["cluster"].value_counts().reset_index()
-    cluster_counts.columns = ["cluster", "count"]
-
-    cluster_summary = cluster_summary.merge(cluster_counts, on="cluster")
-
-    print("\n=== Métricas del Modelo ===")
-    print(metrics)
-
-    print("\n=== Resumen de Clusters ===")
-    print(cluster_summary)
-
-    return metrics, pipeline, clustered_data
