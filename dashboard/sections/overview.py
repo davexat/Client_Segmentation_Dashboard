@@ -6,8 +6,7 @@ import pandas as pd
 from dashboard.config import CLUSTER_COLORS as colors
 from dashboard.config import CUSTOMER_TYPES as customers
 from dashboard.config import DEFAULT_BACKGROUND_COLOR as defcolor
-from dashboard.sections.cluster_analysis import show_cluster_analysis
-from dashboard.layout import create_container
+from dashboard.layout import create_container, create_header, format_large_numbers
 
 #from customer_segmentation.plot import create_boxplot_figure
 #from customer_segmentation.plot import create_histogram_figure
@@ -24,12 +23,12 @@ def show_overview(df):
 
     col3, col4 = st.columns([6,4])
     with col3:
-        show_cluster_analysis(df)
+        show_pie_charts(df)
     with col4:
-        show_selector_graph(df, defcolor)
+        show_selector_graph(df)
 
 def show_selector_graph(df, bg_color = defcolor):
-    with create_container("graphs", bg_color):
+    with create_container("graphs", color = bg_color):
         col2_1, col2_2 = st.columns(2)
         with col2_1:
             selected_var = show_variable_selector()
@@ -44,19 +43,19 @@ def show_selector_graph(df, bg_color = defcolor):
 
 def show_clients_cluster(df, key="clients"):
     gb = df.groupby('cluster').size()
-    show_metric_cluster(gb, " clients", key, bg_color="#1B1D22", format=False)
+    show_metric_cluster(gb, " clients", key, bg_color=defcolor, format=False)
 
 def show_visits_cluster(df, key="visits"):
     gb = df.groupby('cluster')["n_visitas"].sum()
-    show_metric_cluster(gb, " visits", key, bg_color="#1B1D22")
+    show_metric_cluster(gb, " visits", key, bg_color=defcolor)
 
 def show_sales_cluster(df, key="sales"):
     gb = df.groupby('cluster')["monto_compras"].sum()
-    show_metric_cluster(gb, " sales", key, bg_color="#1B1D22")
+    show_metric_cluster(gb, " sales", key, bg_color=defcolor)
 
 def show_discounts_cluster(df, key="discounts"):
     gb = df.groupby('cluster')["monto_descuentos"].sum()
-    show_metric_cluster(gb, " discounts", key, bg_color="#1B1D22")
+    show_metric_cluster(gb, " discounts", key, bg_color=defcolor)
 
 def show_metric_cluster(gb, text, key, bg_color=defcolor, format=True):
     totals = gb.sum(), gb.loc[0], gb.loc[1], gb.loc[2]
@@ -70,17 +69,8 @@ def show_metric_cluster(gb, text, key, bg_color=defcolor, format=True):
         </div>
     </div>
     """
-    with create_container(key, bg_color):
+    with create_container(key, color = bg_color):
         st.markdown(metrics_html, unsafe_allow_html=True)
-
-def create_header(title, value, txt_color):
-    style = '''
-    <div style="text-align: center; color: {txt_color}; padding: 0;">
-        <h6 style="margin-bottom: 0; padding: 15px 0 0 0;">{title}</h6>
-        <h1 style="margin-top: 0; padding: 0 0 10px 0;">{value}</h1>
-    </div>
-    '''
-    return style.format(title=title, value=value, txt_color=txt_color)
 
 def show_variable_selector():
     variables = ["n_visitas", "monto_compras", "monto_descuentos"]
@@ -102,6 +92,62 @@ def show_boxplot(df, selected_var, cluster_labels = customers, cluster_colors = 
     boxplot_fig = create_boxplot_figure(df, selected_var, cluster_labels, cluster_colors)
     return configure_boxplot_figure(boxplot_fig, cluster_labels, color, height)
 
+def show_pie_charts(df, cluster_labels = customers, cluster_colors = colors, color = defcolor):
+    with create_container("piecharts", color):
+        col1, col2, col3, col4 = st.columns(4)
+        variables = ["cluster", "n_visitas", "monto_compras", "monto_descuentos"]
+        columns = [col1, col2, col3, col4]
+        for var, col in zip(variables, columns):
+            with col:
+                pie_chart = create_pie_chart_figure(df, var, cluster_labels, cluster_colors)
+                configured_pie_chart = configure_pie_chart_figure(pie_chart, color)
+                st.plotly_chart(configured_pie_chart)
+
+# def show_pie_charts(df, color=defcolor):
+#     with create_container("piecharts", defcolor):
+#         col1, col2, col3, col4 = st.columns(4)
+#         with col1:
+#             st.plotly_chart(plot_pie_chart(df, "cluster", color))
+#         with col2:
+#             st.plotly_chart(plot_pie_chart(df, "n_visitas", color))
+#         with col3:
+#             st.plotly_chart(plot_pie_chart(df, "monto_compras", color))
+#         with col4:
+#             st.plotly_chart(plot_pie_chart(df, "monto_descuentos", color))
+
+# def plot_pie_chart(df, column, color = defcolor):
+#     data = df.groupby('cluster')[column].sum() if column != "cluster" else df['cluster'].value_counts()
+#     fig = px.pie(
+#         names=customers,
+#         values=data.values.tolist(),
+#         color=customers,
+#         color_discrete_map=colors,
+#         title=f"Distribution of {column}",
+#         template="plotly_dark"
+#     )
+#     fig.update_layout(
+#         paper_bgcolor=color,
+#         margin=dict(l=30, r=30, t=0, b=0),
+#         title=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, y=0.9),
+#         legend=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, yanchor="bottom", y=0.025),
+#         height=400
+#     )
+#     return fig
+
+# def plot_scatter_plots(df):
+#     scatter_vars = [(df[0], df[1]), (df[0], df[2]), (df[1], df[2])]
+#     df['cluster_label'] = df['cluster'].map({i: customers[i] for i in range(len(customers))})
+#     for var_x, var_y in scatter_vars:
+#         scatter_fig = px.scatter(
+#             df, x=var_x, y=var_y, color='cluster_label',
+#             title=f"Scatter: {var_x} vs {var_y}",
+#             template="plotly_dark",
+#             color_discrete_map=colors
+#         )
+#         scatter_fig.update_traces(marker=dict(size=8, opacity=0.8))
+#         st.plotly_chart(scatter_fig)
+#     df.drop(columns=['cluster_label'], inplace=True)
+
 #### METODOS DE CONFIGURACION
 
 def configure_boxplot_figure(fig, cluster_labels, color, height=400, legend_position=(0.75, 1.2)):
@@ -113,7 +159,8 @@ def configure_boxplot_figure(fig, cluster_labels, color, height=400, legend_posi
         plot_bgcolor=color,
         paper_bgcolor=color,
         height=height,
-        legend=dict(font=dict(size=15), x=legend_position[0], y=legend_position[1])
+        legend=dict(font=dict(size=15), x=legend_position[0], y=legend_position[1]),
+        title=dict(xanchor="center", x=0.5)
     )
     fig.for_each_trace(lambda t: t.update(name=cluster_labels[int(t.name)]))
     return fig
@@ -134,6 +181,17 @@ def configure_bar_chart_figure(fig, color, height=400):
     fig.update_layout(
         plot_bgcolor=color,
         paper_bgcolor=color,
+        height=height,
+        title=dict(xanchor="center", x=0.5)
+    )
+    return fig
+
+def configure_pie_chart_figure(fig, color, height=400):
+    fig.update_layout(
+        paper_bgcolor=color,
+        margin=dict(l=30, r=30, t=0, b=0),
+        title=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, y=0.9),
+        legend=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, yanchor="bottom", y=0.025),
         height=height
     )
     return fig
@@ -190,11 +248,18 @@ def create_histogram_figure(df, selected_var, cluster_labels, cluster_colors):
         color_discrete_map={i: cluster_colors[cluster_labels[i]] for i in range(len(cluster_labels))}
     )
 
-#### METODOS UTIL
-def format_large_numbers(value):
-    if value >= 1_000_000:
-        return f"{value / 1_000_000:.1f}M"
-    elif value >= 1_000:
-        return f"{value / 1_000:.1f}K"
+def create_pie_chart_figure(df, selected_var, cluster_labels, cluster_colors, template="plotly_dark"):
+    if selected_var == "cluster":
+        data = df['cluster'].value_counts()
     else:
-        return f"{value:.1f}"
+        data = df.groupby('cluster')[selected_var].sum()
+    
+    fig = px.pie(
+        names=cluster_labels,
+        values=data.values.tolist(),
+        color=cluster_labels,
+        color_discrete_map=cluster_colors,
+        title=f"Distribution of {selected_var}",
+        template=template
+    )
+    return fig
