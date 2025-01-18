@@ -1,10 +1,8 @@
-# Client_Segmentation_Dashboard
+# Client Segmentation Dashboard
 
 ## Project Description
 
-The purpose of this project is to identify and analyze different customer profiles in an e-commerce setting using Data Science tools. The analysis enables the optimization of business strategies based on data, facilitating strategic decision-making through an interactive dashboard developed in Streamlit.
-
-The project spans from data preparation and cleaning to visualizing the results through an interactive panel, ensuring that the model and the generated segments are easily interpretable for end-users.
+The purpose of this project is to identify and analyze different customer profiles in an e-commerce setting using Data Science tools. The analysis enables the optimization of business strategies based on data, facilitating strategic decision-making through an interactive dashboard developed in Streamlit. The project spans from data preparation and cleaning to visualizing the results through an interactive panel, ensuring that the model and the generated segments are easily interpretable for end-users.
 
 ![400077713-8d5cf4e6-7f09-41cb-9a1e-06ac21f585ef](https://github.com/user-attachments/assets/ca22660f-4da5-48d8-8a25-aa95bb8a472d)
 
@@ -14,87 +12,118 @@ The project spans from data preparation and cleaning to visualizing the results 
 
 ### **Components**
 
-- <img src="https://github.com/user-attachments/assets/109ab444-25f9-4756-bc98-50b8d6b189b6" alt="L1" width="30"/> **Database:** 
-  
-  Contains key information related to customer behavior and characteristics, serving as the primary source of analyzed data.
-
-- <img src="https://github.com/user-attachments/assets/9ded49b3-b532-4558-8af5-83c3475ef354" alt="L2" width="30"/> **Jupyter Notebooks:**
-  
-  The notebooks are organized by workflow stages, from initial data cleaning to advanced cluster analysis.
-
-- <img src="https://github.com/user-attachments/assets/c458d40a-f336-46af-bacc-3b5756155e5b" alt="L3" width="30"/> **Streamlit:**
-  
-  A platform used to create the interactive dashboard that visualizes segmentation results and allows comparisons between customer groups.
-
-- <img src="https://github.com/user-attachments/assets/81241e45-5833-44b4-b87f-a7452ecd0e20" alt="L4" width="30"/> **Scikit-learn:**
-  
-  A library used for data scaling, clustering algorithm implementation, and evaluation metric computation.
-
-- **Visualization Tools:**
-  
-  - **Matplotlib and Seaborn:** Static visualizations used in exploratory analysis.
+  ![Database](https://img.shields.io/badge/Database-Data--source-6C757D?style=for-the-badge&logo=data&logoColor=white)
     
-  - <img src="https://github.com/user-attachments/assets/e793cbb5-a231-4f71-a49c-a7933c1b1c88" alt="L5" width="50"/> **Plotly:** Interactive charts that allow dynamic data exploration.
+-  Contains key information related to customer behavior and characteristics, serving as the primary source of analyzed data.
+  
+  ![Jupyter](https://img.shields.io/badge/Jupyter_Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
+    
+-  The notebooks are organized by workflow stages, from initial data cleaning to advanced cluster analysis.
+  
+  ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+    
+-  A platform used to create the interactive dashboard that visualizes segmentation results and allows comparisons between customer groups.
+  
+  ![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+    
+-  A library used for data scaling, clustering algorithm implementation, and evaluation metric computation.
+
+### **Visualization Tools**
+  
+![Matplotlib](https://img.shields.io/badge/Matplotlib-3766AB?style=for-the-badge&logo=matplotlib&logoColor=white)
+
+- Used to create static plots for exploratory data analysis and to visualize data distributions and trends.
+
+![Seaborn](https://img.shields.io/badge/Seaborn-4C96D7?style=for-the-badge&logoColor=white)
+
+- Enhanced the visualizations with more advanced and aesthetically pleasing statistical plots, such as heatmaps and pairplots.
+
+![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white) 
+
+- Provided interactive visualizations for dynamic data exploration, allowing users to interact with segmentation results directly.
 
 ---
 
 ## Workflow Summary
 
-### **Data Preparation and Cleaning (Notebook 0):**
+![Data Preparation and Cleaning](https://img.shields.io/badge/Data_Preparation_and_Cleaning_(Notebook_0)-0052CC?style=for-the-badge&logo=database&logoColor=white)
 
 - Removal of inconsistent records, including null values, negatives, and zeros in key variables.
-  
+   
 - Transformation and organization of columns to ensure the quality of the initial data.
 
-### **Exploratory Analysis (Notebook 1):**
+---
+
+![Exploratory Analysis](https://img.shields.io/badge/Exploratory_Analysis_(Notebook_1)-228B22?style=for-the-badge&logo=search&logoColor=white)
 
 - Exploration of available variables in the dataset, identifying relevant patterns and trends.
   
 - Initial review of possible relationships between main features for customer segmentation.
 
-### **Clustering Methods and Metrics Definition (Notebook 2):**
+---
+
+![Clustering Methods and Metrics](https://img.shields.io/badge/Clustering_Methods_and_Metrics_(Notebook_2)-FF4500?style=for-the-badge&logo=analytics&logoColor=white)
 
 - Theoretical evaluation of clustering methods suitable for the segmentation problem.
   
 - Selection of clustering approaches based on data nature and definition of metrics to evaluate result quality.
 
-### **Clustering Implementation (Notebook 3):**
+---
+
+![Clustering Implementation](https://img.shields.io/badge/Clustering_Implementation_(Notebook_3)-6A5ACD?style=for-the-badge&logo=chart-bar&logoColor=white)
 
 - Practical application of the methods defined in the theoretical analysis.
   
 - Comparison of results to determine the most suitable method based on the behavior of identified groups.
 
-### **Cluster Analysis and Categorization (Notebook 4):**
+---
+
+![Cluster Analysis and Categorization](https://img.shields.io/badge/Cluster_Analysis_and_Categorization_(Notebook_4)-8A2BE2?style=for-the-badge&logo=pie-chart&logoColor=white)
 
 - Detailed analysis of the generated clusters, identifying specific patterns in customer groups.
   
 - Assignment of descriptive labels for each segment based on their main characteristics.
 
-### **Interactive Dashboard Development:**
+---
 
-- Creation of a dashboard that allows users to:
+![Interactive Dashboard Development](https://img.shields.io/badge/Interactive_Dashboard_Development-20B2AA?style=for-the-badge&logo=dashboard&logoColor=white)
+
+Creation of a dashboard that allows users to:  
+
+- Visualize general statistics.
   
-  - Visualize general statistics.
-    
-  - Explore customer segments.
-    
-  - Compare customer groups interactively.
+- Explore customer segments.
+  
+- Compare customer groups interactively.
+
 
 ---
 
 ## Technologies Used
 
-- <img src="https://github.com/user-attachments/assets/c458d40a-f336-46af-bacc-3b5756155e5b" alt="L6" width="40"/> **Streamlit:** Development of the interactive dashboard.
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+
+- Development of the interactive dashboard.
   
-- <img src="https://github.com/user-attachments/assets/c201c391-c73a-4279-99b5-f29c0c8e5124" alt="L7" width="40"/> **Pandas:** Management and analysis of structured data.
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 
-- <img src="https://github.com/user-attachments/assets/f6f47768-b207-4aac-af66-2f1d6293e29b" alt="L8" width="40"/> **NumPy:** Advanced mathematical operations.
+- Management and analysis of structured data.
 
-- <img src="https://github.com/user-attachments/assets/81241e45-5833-44b4-b87f-a7452ecd0e20" alt="L9" width="40"/> **Scikit-learn:** Clustering algorithms and evaluation metrics.
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
 
-- **Matplotlib and Seaborn:** Static visualizations for exploratory analysis.
+- Advanced mathematical operations.
 
-- <img src="https://github.com/user-attachments/assets/e793cbb5-a231-4f71-a49c-a7933c1b1c88" alt="L10" width="50"/> **Plotly:** Interactive charts for dynamic analysis.
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+
+- Clustering algorithms and evaluation metrics.
+
+![Matplotlib](https://img.shields.io/badge/Matplotlib-3766AB?style=for-the-badge&logo=chart-bar&logoColor=white) ![Seaborn](https://img.shields.io/badge/Seaborn-4C96D7?style=for-the-badge&logo=area-chart&logoColor=white)
+
+- Static visualizations for exploratory analysis.
+
+![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
+
+- Interactive charts for dynamic analysis.
 
 ---
 
