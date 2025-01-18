@@ -32,6 +32,7 @@ def main():
         ["Overview", "Cluster Analysis"]
     )
     if option == "Overview":
+        # show_cluster_analysis(df)
         show_overview(df)
     elif option == "Cluster Analysis":
         show_cluster_analysis(df)
