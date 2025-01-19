@@ -24,7 +24,7 @@ def format_large_numbers(value):
     elif value >= 1_000:
         return f"{value / 1_000:.1f}K"
     else:
-        return f"{value:.1f}"
+        return f"{value:.2f}"
 
 def create_header(title, value, txt_color):
     style = '''

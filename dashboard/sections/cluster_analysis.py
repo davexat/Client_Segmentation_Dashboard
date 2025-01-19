@@ -8,12 +8,17 @@ from itertools import combinations
 from dashboard.config import CLUSTER_COLORS as colors
 from dashboard.config import CUSTOMER_TYPES as customers
 from dashboard.config import DEFAULT_BACKGROUND_COLOR as defcolor
+from dashboard.config import configure_pie_chart_figure, configure_scatter_figure, configure_figure
+
 from dashboard.layout import create_container, create_header, format_large_numbers
 
+from customer_segmentation.plot import create_boxplot_figure
+from customer_segmentation.plot import create_density_figure
+from customer_segmentation.plot import create_scatter_figure
 
 def show_cluster_analysis(df):
     st.header("Cluster Analysis")
-    col1, col2 = st.columns([5,5])
+    col1, col2 = st.columns(2)
     with col1:
         with create_container("slider", color = defcolor, padding = 10):
             header_placeholder = st.empty()
@@ -23,19 +28,21 @@ def show_cluster_analysis(df):
         gb = df[df["cluster"] == cluster_number]
         show_metrics_for_cluster(df, gb, cluster_number)
         with create_container("scatter_cont", color = defcolor, padding = 10):
-            with create_container("scatters", color = defcolor):
-                selected_vars = show_variables_selector(gb)
-                show_scatter(gb, selected_vars)
-        # col1_1, col1_2 = st.columns([3.7,6.3])
-        # with col1_2:
-        #     with create_container("corr", color = defcolor):
-        #         show_correlation_heatmap(gb)
+            show_scatter_container(gb)
     with col2:
         with create_container("column2", color = defcolor, padding = 10):
-            with create_container("graphs_2", color = defcolor):
-                selected_var = show_variable_selector(df)
-                show_density_diagram(gb, selected_var, colors[customers[cluster_number]])
-                show_boxplot_diagram(gb, selected_var, colors[customers[cluster_number]])
+            show_density_and_boxplot(df, gb, colors[customers[cluster_number]])
+
+def show_density_and_boxplot(df, gb, cluster_color, color = defcolor):
+     with create_container("density_and_boxplot", color = color):
+            selected_var = show_variable_selector(df)
+            show_density_diagram(gb, selected_var, cluster_color)
+            show_boxplot_diagram(gb, selected_var, cluster_color)
+
+def show_scatter_container(gb):
+    with create_container("scatters", color = defcolor):
+                selected_vars = show_variables_selector(gb)
+                show_scatter(gb, selected_vars)
 
 def show_slider(df):
     st.markdown("""<style> .stSlider { max-width: 90%; margin: auto; } </style> """, unsafe_allow_html=True)
@@ -59,8 +66,6 @@ def show_variables_selector(df):
 def show_variable_selector(df):
     variables = list(df.columns)[:-1]
     return st.selectbox("Select a variable to display:", variables)
-
-### FUNCIONES DE MUESTRA
 
 def show_metrics_for_cluster(df, gb, cluster_number, key = "metrics", bg_color=defcolor, format=True):
     columns=list(df.columns)
@@ -99,109 +104,6 @@ def show_boxplot_diagram(df, selected_var, cluster_color, color = defcolor):
     condigured_boxp = configure_figure(boxp_fig, color)
     st.plotly_chart(condigured_boxp)
 
-### FUNCIONES DE CONFIGURACION
-
-def configure_scatter_figure(fig, color, height=309, marker_size=8, marker_opacity=0.8):
-    fig.update_layout(
-        plot_bgcolor=color,
-        paper_bgcolor=color,
-        height=height,
-        margin=dict(l=50, r=50, t=70, b=70),
-        title=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, y=0.94)
-    )
-    fig.update_traces(marker=dict(size=marker_size, opacity=marker_opacity), showlegend=False)
-    return fig
-
-# def configure_heatmap_appearance(plt, color):
-#     plt.xticks(fontsize=8, color='white')
-#     plt.yticks(fontsize=8, color='white')
-#     plt.title("Correlation Heatmap", fontsize=8, weight="bold", color="white")
-#     plt.gca().set_facecolor(color)
-#     return plt
-
-def configure_heatmap_appearance(fig, color):
-    ax = fig.gca()
-    ax.tick_params(axis='both', labelsize=8, colors='white')
-    ax.set_title("Correlation Heatmap", fontsize=8, weight="bold", color="white")
-    ax.set_facecolor(color)
-    return fig
-
-def configure_figure(fig, color, height=300):
-    fig.update_layout(
-        plot_bgcolor=color,
-        paper_bgcolor=color,
-        height=height,
-        title=dict(xanchor="center", x=0.5)
-    )
-    fig.update_traces(opacity=1)
-    return fig
-
-### ESTO NO DEBERÍA IR AQUÍ
-
-def create_scatter_figure(df, var_x, var_y, cluster_labels, cluster_colors, template="plotly_dark"):
-    df['cluster_label'] = df['cluster'].map({i: cluster_labels[i] for i in range(len(cluster_labels))})
-    fig = px.scatter(
-        df, x=var_x, y=var_y, color='cluster_label',
-        title=f"Scatter: {var_x} vs {var_y}",
-        template=template,
-        color_discrete_map=cluster_colors
-    )
-    df.drop(columns=['cluster_label'], inplace=True)  # Clean up temporary column
-    return fig
-
-def create_correlation_heatmap(df, color):
-    df_numeric = df.drop(columns=['cluster'], errors='ignore')
-    corr_matrix = df_numeric.corr()
-    fig, ax = plt.subplots(figsize=(5, 4), facecolor=color)
-    sns.heatmap(
-        corr_matrix, 
-        annot=True, 
-        cmap="coolwarm", 
-        linewidths=0.5, 
-        linecolor='black', 
-        square=True,
-        cbar_kws={"shrink": 0.75},
-        annot_kws={"size": 10, "weight": "bold", "color": "black"},
-        vmin=-1, vmax=1,
-        xticklabels=corr_matrix.columns, 
-        yticklabels=corr_matrix.columns,
-        ax=ax
-    )
-    return fig
-
-def create_density_figure(df, selected_var, cluster_color):
-    fig = px.histogram(
-        df,
-        x=selected_var,
-        histnorm="density",
-        title=f"Density Plot of {selected_var}",
-        labels={selected_var: selected_var},
-        template="plotly_dark"
-    ).update_layout(showlegend=False).update_traces(marker_color=cluster_color)
-    return fig
-
-def create_boxplot_figure(df, selected_var, cluster_color):
-    fig = px.box(
-        df,
-        x=selected_var,
-        title=f"Boxplot of {selected_var} for Selected Cluster",
-        labels={selected_var: selected_var},
-        template="plotly_dark",
-        color_discrete_sequence=[cluster_color]
-    )
-    return fig
-
-"""
-def show_cluster_correlation_heatmap(df, cluster_id):
-    cluster_df = df[df['cluster'] == cluster_id][["n_visitas", "monto_compras", "monto_descuentos"]]
-    corr_matrix = cluster_df.corr()
-    # Create the figure explicitly
-    fig, ax = plt.subplots(figsize=(5, 4))
-    # Plot the heatmap on the created figure
-    sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt='.2f', linewidths=0.5, ax=ax)
-    # Use st.pyplot() and pass the figure
-    st.pyplot(fig)
-"""
 
 
     
