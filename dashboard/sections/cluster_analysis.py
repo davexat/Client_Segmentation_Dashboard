@@ -15,12 +15,17 @@ def show_cluster_analysis(df):
     st.header("Cluster Analysis")
     col1, col2 = st.columns([5,5])
     with col1:
-        header_placeholder = st.empty()
-        cluster_number = show_slider(df)
-        with header_placeholder:
-            show_cluster_header(cluster_number)
+        with create_container("slider", color = defcolor, padding = 10):
+            header_placeholder = st.empty()
+            cluster_number = show_slider(df)
+            with header_placeholder:
+                show_cluster_header(cluster_number)
         gb = df[df["cluster"] == cluster_number]
-        show_metrics_for_cluster(df, gb)
+        show_metrics_for_cluster(df, gb, cluster_number)
+        col1_1, col1_2 = st.columns([3.7,6.3])
+        with col1_2:
+            with create_container("corr", color = defcolor):
+                show_correlation_heatmap(gb)
     with col2:
         with create_container("scatters", color = defcolor):
             selected_vars = show_variables_selector(gb)
@@ -30,16 +35,15 @@ def show_cluster_analysis(df):
             show_density_diagram(gb, selected_var, colors[customers[cluster_number]])
 
 def show_slider(df):
-    st.markdown("""<style> .stSlider { max-width: 95%; margin: auto; } </style> """, unsafe_allow_html=True)
-    with create_container("slider", defcolor, 10):
-        cluster_number = st.slider(
-            label="Select a Cluster:", 
-            min_value=0, 
-            max_value= len(df.groupby("cluster")) - 1,
-            step=1, 
-            value=0,
-            format="Cluster %d"
-        )
+    st.markdown("""<style> .stSlider { max-width: 90%; margin: auto; } </style> """, unsafe_allow_html=True)
+    cluster_number = st.slider(
+        label="Select a Cluster:", 
+        min_value=0, 
+        max_value= len(df.groupby("cluster")) - 1,
+        step=1, 
+        value=0,
+        format="Cluster %d"
+    )
     return cluster_number
 
 def show_cluster_header(cluster_number):
@@ -55,7 +59,7 @@ def show_variable_selector(df):
 
 ### FUNCIONES DE MUESTRA
 
-def show_metrics_for_cluster(df, gb, key = "metrics", bg_color=defcolor, format=True):
+def show_metrics_for_cluster(df, gb, cluster_number, key = "metrics", bg_color=defcolor, format=True):
     columns=list(df.columns)
     totals = gb["cluster"].count(), gb["n_visitas"].sum(), gb["monto_compras"].sum(), gb["monto_descuentos"].sum()
     totals = tuple(format_large_numbers(totals[i]) if i != 0 else totals[i] for i in range(len(totals)))
@@ -64,7 +68,7 @@ def show_metrics_for_cluster(df, gb, key = "metrics", bg_color=defcolor, format=
     <div style="padding: 0px; margin: 0 0 15px 0;">
         <div style="display: flex; justify-content: space-around;">
             <div style="flex: 1;">{create_header(f"Total clients", totals[0], "white")}</div>
-            {"".join(f'<div style="flex: 1;">{create_header(f"{columns[i]}", totals[i+1], colors[customers[i]])}</div>' for i in range(len(customers)))}
+            {"".join(f'<div style="flex: 1;">{create_header(f"{columns[i]}", totals[i+1], colors[customers[cluster_number]])}</div>' for i in range(len(customers)))}
         </div>
     </div>
     """
@@ -95,7 +99,7 @@ def configure_scatter_figure(fig, color, height=300, marker_size=8, marker_opaci
         paper_bgcolor=color,
         height=height,
         margin=dict(l=50, r=50, t=70, b=70),
-        title=dict(font=dict(size=18, color="white"), xanchor="center", x=0.5, y=0.94)
+        title=dict(font=dict(size=15, color="white"), xanchor="center", x=0.5, y=0.94)
     )
     fig.update_traces(marker=dict(size=marker_size, opacity=marker_opacity), showlegend=False)
     return fig
