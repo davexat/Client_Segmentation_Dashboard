@@ -89,6 +89,6 @@ The **dashboard** provides an interactive interface for visualizing customer seg
 
 To run the solution:
 - **Clustering Pipeline:** Execute `clustering.py` in the `customer_segmentation/` folder.
-- **Dashboard:** Run `app.py` in the `dashboard/` folder.
+- **Dashboard:** Run `app.py` in the `dashboard/` folder with the following sentence: `Streamlit run app.py`
 
 To use a different dataset, update the relevant file paths in `clustering.py` (for segmentation) and `data.py` (for the dashboard). The dataset must be structured similarly to the original data for compatibility.
