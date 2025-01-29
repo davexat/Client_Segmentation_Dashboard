@@ -9,6 +9,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator, ClusterMixin
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 from customer_segmentation.plot import visualize_clusters
+from customer_segmentation.utils.paths_internal import data_processed_dir
 
 def scale_minmax(df, column):
     scaler = MinMaxScaler()
@@ -71,8 +72,29 @@ class DBSCANPipeline(Pipeline, BaseEstimator, ClusterMixin):
 
         return cluster_asignaciones
 
-def crear_pipeline():
+def create_pipeline():
     return DBSCANPipeline([
         ('scaler', MinMaxScaler()),
         ('dbscan', DBSCAN(eps=0.04, min_samples=50))  
     ])
+
+def main():
+    print("Loading data...")
+    dataset_path = data_processed_dir("cleaned_dataset.csv")
+    df = pd.read_csv(dataset_path)
+    df = df.drop(columns=["ID", "dias_primera_compra", "n_clicks", "info_perfil"])
+    
+    print("Creating pipeline...")
+    pipeline = create_pipeline()
+    
+    print("Applying clustering...")
+    df["cluster"] = pipeline.fit_predict(df)
+    
+    print("\nClustered Data:")
+    print(df)
+
+    print("\nCluster distribution:")
+    print(df["cluster"].value_counts().sort_index())
+
+if __name__ == "__main__":
+    main()
